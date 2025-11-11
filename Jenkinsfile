@@ -47,6 +47,9 @@ pipeline {
                     } else if (env.TAG_NAME) {
                         imageTag = "${env.TAG_NAME}"
                         stage_name = "production"
+                    } else {
+                        imageTag = "${(env.BRANCH_NAME}"
+                        stage_name = "${(env.BRANCH_NAME}"
                     }
                     
                     env.IMAGE_TAG = imageTag
