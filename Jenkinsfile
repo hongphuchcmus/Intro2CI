@@ -33,13 +33,6 @@ pipeline {
         }
         
         stage('Build Docker Image') {
-            when {
-                anyOf {
-                    branch 'dev'
-                    branch 'main'
-                    tag pattern: 'v\\d+\\.\\d+\\.\\d+', comparator: 'REGEXP'
-                }
-            }
             steps {
                 script {
                     def imageTag = ""
@@ -74,13 +67,6 @@ pipeline {
         }
         
         stage('Push to Docker Hub') {
-            when {
-                anyOf {
-                    branch 'dev'
-                    branch 'main'
-                    tag pattern: 'v\\d+\\.\\d+\\.\\d+', comparator: 'REGEXP'
-                }
-            }
             steps {
                 script {
                     bat """
