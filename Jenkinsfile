@@ -48,8 +48,8 @@ pipeline {
                         imageTag = "${env.TAG_NAME}"
                         stage_name = "production"
                     } else {
-                        imageTag = "${(env.BRANCH_NAME}"
-                        stage_name = "${(env.BRANCH_NAME}"
+                        imageTag = "${env.BRANCH_NAME}"
+                        stage_name = "${env.BRANCH_NAME}"
                     }
                     
                     env.IMAGE_TAG = imageTag
