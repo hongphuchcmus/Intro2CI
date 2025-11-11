@@ -35,9 +35,9 @@ pipeline {
         stage('Build Docker Image') {
             when {
                 anyOf {
-                    branch 'dev'
-                    branch 'main'
-                    tag pattern: 'v\\d+\\.\\d+\\.\\d+', comparator: 'REGEXP'
+                    branch 'dev_windows'
+                    branch 'main_windows'
+                    tag pattern: 'vw\\d+\\.\\d+\\.\\d+', comparator: 'REGEXP'
                 }
             }
             steps {
