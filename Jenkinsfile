@@ -45,10 +45,10 @@ pipeline {
                     def imageTag = ""
                     def stage_name = ""
                     
-                    if (env.BRANCH_NAME == 'dev') {
+                    if (env.BRANCH_NAME == 'dev_windows') {
                         imageTag = "dev"
                         stage_name = "dev"
-                    } else if (env.BRANCH_NAME == 'main') {
+                    } else if (env.BRANCH_NAME == 'main_windows') {
                         imageTag = "staging"
                         stage_name = "staging"
                     } else if (env.TAG_NAME) {
