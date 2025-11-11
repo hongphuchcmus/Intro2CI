@@ -76,9 +76,9 @@ pipeline {
         stage('Push to Docker Hub') {
             when {
                 anyOf {
-                    branch 'dev'
-                    branch 'main'
-                    tag pattern: 'v\\d+\\.\\d+\\.\\d+', comparator: 'REGEXP'
+                    branch 'dev_windows'
+                    branch 'main_windows'
+                    tag pattern: 'vw\\d+\\.\\d+\\.\\d+', comparator: 'REGEXP'
                 }
             }
             steps {
@@ -99,7 +99,7 @@ pipeline {
         
         stage('Deploy to Development') {
             when {
-                branch 'dev'
+                branch 'dev_windows'
             }
             steps {
                 script {
@@ -113,7 +113,7 @@ pipeline {
         
         stage('Deploy to Staging') {
             when {
-                branch 'main'
+                branch 'main_windows'
             }
             steps {
                 script {
@@ -127,7 +127,7 @@ pipeline {
         
         stage('Deploy to Production') {
             when {
-                tag pattern: 'v\\d+\\.\\d+\\.\\d+', comparator: 'REGEXP'
+                tag pattern: 'vw\\d+\\.\\d+\\.\\d+', comparator: 'REGEXP'
             }
             steps {
                 script {
