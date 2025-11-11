@@ -33,6 +33,13 @@ pipeline {
         }
         
         stage('Build Docker Image') {
+            when {
+                anyOf {
+                    branch 'dev'
+                    branch 'main'
+                    tag pattern: 'v\\d+\\.\\d+\\.\\d+', comparator: 'REGEXP'
+                }
+            }
             steps {
                 script {
                     def imageTag = ""
@@ -47,9 +54,6 @@ pipeline {
                     } else if (env.TAG_NAME) {
                         imageTag = "${env.TAG_NAME}"
                         stage_name = "production"
-                    } else {
-                        imageTag = "${env.BRANCH_NAME}"
-                        stage_name = "${env.BRANCH_NAME}"
                     }
                     
                     env.IMAGE_TAG = imageTag
@@ -70,6 +74,13 @@ pipeline {
         }
         
         stage('Push to Docker Hub') {
+            when {
+                anyOf {
+                    branch 'dev'
+                    branch 'main'
+                    tag pattern: 'v\\d+\\.\\d+\\.\\d+', comparator: 'REGEXP'
+                }
+            }
             steps {
                 script {
                     bat """
@@ -93,7 +104,7 @@ pipeline {
             steps {
                 script {
                     withCredentials([string(credentialsId: 'render-deploy-hook-dev', variable: 'DEPLOY_HOOK')]) {
-                        bat 'curl -X POST $DEPLOY_HOOK'
+                        bat "curl -X POST ${DEPLOY_HOOK}"
                     }
                     echo 'Deployed to Development environment'
                 }
@@ -107,7 +118,7 @@ pipeline {
             steps {
                 script {
                     withCredentials([string(credentialsId: 'render-deploy-hook-staging', variable: 'DEPLOY_HOOK')]) {
-                        bat 'curl -X POST $DEPLOY_HOOK'
+                        bat "curl -X POST ${DEPLOY_HOOK}"
                     }
                     echo 'Deployed to Staging environment'
                 }
@@ -121,7 +132,7 @@ pipeline {
             steps {
                 script {
                     withCredentials([string(credentialsId: 'render-deploy-hook-prod', variable: 'DEPLOY_HOOK')]) {
-                        bat 'curl -X POST $DEPLOY_HOOK'
+                        bat "curl -X POST ${DEPLOY_HOOK}"
                     }
                     echo 'Deployed to Production environment'
                 }
