@@ -12,7 +12,7 @@ pipeline {
             steps {
                 checkout scm
                 script {
-                    env.GIT_COMMIT_SHORT = sh(
+                    env.GIT_COMMIT_SHORT = bat(
                         script: "git rev-parse --short HEAD",
                         returnStdout: true
                     ).trim()
@@ -22,13 +22,13 @@ pipeline {
         
         stage('Install Dependencies') {
             steps {
-                sh 'npm ci'
+                bat 'npm ci'
             }
         }
         
         stage('Run Tests') {
             steps {
-                sh 'npm test'
+                bat 'npm test'
             }
         }
         
@@ -59,12 +59,12 @@ pipeline {
                     env.IMAGE_TAG = imageTag
                     env.STAGE_NAME = stage_name
                     
-                    sh """
+                    bat """
                         docker build -t ${DOCKER_REGISTRY}/${DOCKER_IMAGE}:${imageTag} .
                     """
                     
                     if (env.TAG_NAME) {
-                        sh """
+                        bat """
                             docker tag ${DOCKER_REGISTRY}/${DOCKER_IMAGE}:${imageTag} \
                                 ${DOCKER_REGISTRY}/${DOCKER_IMAGE}:production
                         """
@@ -83,13 +83,13 @@ pipeline {
             }
             steps {
                 script {
-                    sh """
+                    bat """
                         echo ${DOCKER_CREDENTIALS_PSW} | docker login -u ${DOCKER_CREDENTIALS_USR} --password-stdin
                         docker push ${DOCKER_REGISTRY}/${DOCKER_IMAGE}:${env.IMAGE_TAG}
                     """
                     
                     if (env.TAG_NAME) {
-                        sh """
+                        bat """
                             docker push ${DOCKER_REGISTRY}/${DOCKER_IMAGE}:production
                         """
                     }
@@ -104,7 +104,7 @@ pipeline {
             steps {
                 script {
                     withCredentials([string(credentialsId: 'render-deploy-hook-dev', variable: 'DEPLOY_HOOK')]) {
-                        sh 'curl -X POST $DEPLOY_HOOK'
+                        bat "curl -X POST ${DEPLOY_HOOK}"
                     }
                     echo 'Deployed to Development environment'
                 }
@@ -118,7 +118,7 @@ pipeline {
             steps {
                 script {
                     withCredentials([string(credentialsId: 'render-deploy-hook-staging', variable: 'DEPLOY_HOOK')]) {
-                        sh 'curl -X POST $DEPLOY_HOOK'
+                        bat "curl -X POST ${DEPLOY_HOOK}"
                     }
                     echo 'Deployed to Staging environment'
                 }
@@ -132,7 +132,7 @@ pipeline {
             steps {
                 script {
                     withCredentials([string(credentialsId: 'render-deploy-hook-prod', variable: 'DEPLOY_HOOK')]) {
-                        sh 'curl -X POST $DEPLOY_HOOK'
+                        bat "curl -X POST ${DEPLOY_HOOK}"
                     }
                     echo 'Deployed to Production environment'
                 }
